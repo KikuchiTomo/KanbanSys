@@ -1,0 +1,40 @@
+{
+    "name": "kanbansys",
+    "version": "0.1.0",
+    "description": "This npm package is a simple \"kanban system\" that supports GET/POST by json.",
+    "main": "kanbanSys.js",
+    "watch": {
+        "build": [
+            "kanbanSys.js",
+            "css/kanbanSys_Style.css"
+        ]
+    },    
+    "scripts": {
+        "watch_build": "npm-watch build",
+        "build": "npm run scripts && npm run styles",
+        "scripts": "browserify ./kanbanSys.js -o ./include/kanbanSys.js",
+        "styles": "npm-css ./css/kanbanSys_Style.css > ./include/kanbanSys.css && cleancss ./include/kanbanSys.css -o ./include/kanbanSys.min.css",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/KikuchiTomo/KanbanSys.git"
+    },
+    "keywords": [
+        "kanban"
+    ],
+    "author": "Kikuchi Tomoo <tomo_kikuchi@icloud.com> (https://github.com/KikuchiTomo)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/KikuchiTomo/KanbanSys/issues"
+    },
+    "homepage": "https://github.com/KikuchiTomo/KanbanSys#readme",
+    "dependencies": {     
+        "npm-watch": "^0.11.0"
+    },
+    "devDependencies": {
+        "browserify": "^17.0.0",
+        "clean-css-cli": "^5.6.0",
+        "npm-css": "^0.2.3"        
+    }
+}

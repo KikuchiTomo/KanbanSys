@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@100;300;400;500;700;800;900&display=swap');
+
+body{
+    margin: 0;
+    background: #1a1a1a;
+}
+
+.btn{
+    display: flex;
+}
+
+.description{
+    font-family: 'M PLUS 1p', sans-serif;
+    background: white;
+    padding: 30px;
+    margin:20px;
+    border-radius: 10px;
+}
+
+.tldr{
+    display: flex;
+}
+
+.tldr div{
+    margin-left: auto;
+}
+
+a{
+    color: #0062ff;
+    padding-right: 10px;
+}
+
+input{
+    font-family: 'M PLUS 1p', sans-serif;
+    padding: 5px 8px;
+    font-size: 12px;;
+}
+.btn > div{
+    text-align: center;
+    padding: 10px 15px;
+    margin-right: 10px;
+    background: #efefef;
+    font-size: 14px;
+}
+
+.btn > div > div{
+    padding-top: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+#l1, #l2{
+    padding-top: 7px;
+    cursor: pointer;
+    user-select: none;
+}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="sample.css">
+    <link rel="stylesheet" href="../include/kanbanSys.min.css">
+    <script src="../include/kanbanSys.js"></script>
+  </head>
+  <body>
+    <div class="description">
+      <div class="tldr">
+        <h1> KanbanSys </h1>
+        <div>
+          KanbanSys はシンプルな見た目の看板システムです．<br>
+          KanbanSys is a simple signage system. <br>
+          KanbanSys 是一个看起来很简单的标牌系统. <br>
+          <a href="https://github.com/KikuchiTomo/KanbanSys" alt="Github">Github</a>
+          <a href="https://twitter.com/mizuhugu35" alt="Twitter">@mizuhugu35</a>
+        </div>
+      </div>
+      <br>
+      <div class="btn">        
+        <div>
+          <input type="text" placeholder="Board name" id="t2">
+          <div id="b0">Add board</div>
+        </div>
+        <div>
+          <input type="text" placeholder="Card title" id="t0">
+          <input type="text" placeholder="Card subtitle" id="t1">
+          <div id="b1">Add card</div>
+        </div>
+        <div>
+          <div id="l1">
+            Light Theme
+          </div>
+          <div id="l2">
+            Dark Theme
+           </div>
+        </div>      
+      </div>
+    </div>
+    <div id="main"></div>
+    
+  </body>
+  <script>
+    window.onload = () => {
+        
+        var kanbanContent = [
+            {
+                BoardName: "Idea",
+                BoardID:   "board0",
+                Contents: [ // You can define your data structure.
+                    {
+                        id: "id0",
+                        title: "bug fix #1",
+                        person: "Jhone"                      
+                    },
+                    {
+                        id: "id2",
+                        title: "bug fix #2",
+                        person: "Mike"
+                    }
+                ]              
+            },
+            {
+                BoardName: "Todo",
+                BoardID:   "board1",
+                Contents: [ // You can define your data structure.
+                    {
+                        id: "id1",
+                        title: "bug fix #11",
+                        person: "Jhone"
+                        
+                    },                    
+                    {
+                        id: "id3",
+                        title: "bug fix #22",
+                        person: "Mike"
+                    }
+                ] 
+            },
+            {
+                BoardName: "Review",
+                BoardID:   "board2",
+                Contents: [ // You can define your data structure.
+                    {
+                        id: "id8",                        
+                        title: "bug fix #111",
+                        person: "Jhone"
+                        
+                    },
+                    {
+                        id: "id4",                        
+                        title: "bug fix #222",
+                        person: "Mike"
+                    },
+                    {
+                        id: "id6",                        
+                        title: "bug fix #333",
+                        person: "Mike"
+                    }
+                ] 
+            }
+        ]
+        
+        var kanban = new KanbanSys({
+            kanbanId: "kanban0",
+            targetElementId: "main",
+            structre: {
+                allowOriginalAssembler: false,
+                originalAssembler: null,
+                defaultAssemblerType: "simple" 
+            },          
+            server: {
+                autoUpload: true,
+                host: "https://tomodev.work",
+                get:  "/kanban",
+                post: "/kanban"
+            },
+            defaultUI: {
+                theme: "dark"              
+            },
+            content: kanbanContent            
+        })
+
+        var cnt = 10
+        
+        function addCard0(){
+            cnt = cnt + 1;
+            kanban.addCard(
+                "board0",
+                {
+                    id: "id" + cnt.toString(),                        
+                    title: document.getElementById("t0").value,
+                    person: document.getElementById("t1").value
+                }
+            )
+        }
+
+        function addBoard0(){
+             cnt = cnt + 1;
+             kanban.addBoard(
+                 document.getElementById("t2").value,
+                 "id" + cnt.toString(),  
+                 {
+                     // Any data...
+                 }
+             )
+        }
+        
+
+        document.getElementById('b0').addEventListener('click', () => {
+            addBoard0()
+        })
+
+        document.getElementById('b1').addEventListener('click', () => {
+            addCard0()
+        })
+
+        document.getElementById('l1').addEventListener('click', () => {
+            kanban.setTheme("light")                
+        })
+
+        document.getElementById('l2').addEventListener('click', () => {
+            kanban.setTheme("dark")                
+        })
+
+    }
+    
+  </script>
+</html>
