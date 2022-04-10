@@ -8,7 +8,7 @@
             "kanbanSys.js",
             "css/kanbanSys_Style.css"
         ]
-    },    
+    },
     "scripts": {
         "watch_build": "npm-watch build",
         "build": "npm run scripts && npm run styles",
@@ -29,12 +29,12 @@
         "url": "https://github.com/KikuchiTomo/KanbanSys/issues"
     },
     "homepage": "https://github.com/KikuchiTomo/KanbanSys#readme",
-    "dependencies": {     
+    "dependencies": {
+        "npm-css": "^0.2.3",
         "npm-watch": "^0.11.0"
     },
     "devDependencies": {
         "browserify": "^17.0.0",
-        "clean-css-cli": "^5.6.0",
-        "npm-css": "^0.2.3"        
+        "clean-css-cli": "^5.6.0"
     }
 }
