@@ -16,10 +16,14 @@
         this.x = 0
         this.y = 0
         this.h = 0
+
+        this.addCardButtonDidPush = function(event, id){}
+        this.deleteButtonDidPush  = function(event, id){}                
+        this.editBoardNameButtonDidPush = function(event, id){}
         
         this.config = config
         this.assembler = undefined
-
+        
         this.__assemblerType0 = function(content){
             // Exmple
             var doms = []
@@ -68,11 +72,7 @@
             div0.appendChild(div1)
             return div0
         }
-
-        this.__showNewCardForm = function(){
-            
-        }       
-        
+     
         this.__createAddButton = function(handler) {
             var button = document.createElement('div')
             button.classList.add("kanbansys-ui-add")
@@ -118,6 +118,7 @@
             menu.addEventListener('click', function(){
                 id = now_id + "-content"
                 let me = document.getElementById(id)
+                if(me === undefined || me === null) return
                 if( me.classList.contains("kanbansys-ui-display-none") ) {
                     me.classList.remove("kanbansys-ui-display-none")
                 }else{
@@ -146,7 +147,7 @@
             self.menus_num = self.menus_num + 1;
             return menu
         }
-
+       
         this.__assembleBoardHeader = function(id, text, num0){
             var header = document.createElement('div')
             header.classList.add("kanbansys-style-kanban-header")
@@ -160,26 +161,33 @@
             num.classList.add("kanbansys-style-kanban-header-num")
             num.innerHTML = (num0 !== undefined) ? num0 : 0;
             num.id = id + "-" + "num"            
-            
+
+            var id_board = id
             var menu = self.__createMenu({
                 "Basic":{
                     "Edit baord name": {
                         "Event": "click",
-                        "Handler": function () {
+                        "Handler": function (e) {
+                            self.editBoardNameButtonDidPush(e, id_board)
                             self.redraw()
                         }
                     },
                     "Delete": {
                         "Event": "click",
-                        "Handler": function () {
+                        "Handler": function (e) {
+                            console.log("Handler")
+                            self.deleteButtonDidPush(e, id_board)
+                            self.removeBoard(id_board)
                             self.redraw()
                         }
                     }
                 }
             })
 
-            var add = self.__createAddButton(function () {
-                self.__showNewCardForm(id)                
+           
+            var add = self.__createAddButton(function (e) {
+                console.log(id_board)                
+                self.addCardButtonDidPush(event, id_board)
             })
 
             header.appendChild(title)
@@ -245,11 +253,7 @@
             div0.appendChild(body)
             return div0
         }
-        
-        this.__assembleKanban = function(){
-            
-        }
-
+     
         this.updateFromServer = function(){
             
         }
@@ -266,7 +270,7 @@
             // re-draw
             let kanban = document.getElementById(self.config.kanbanId)
             kanban.remove()
-            self.init()
+            self.draw()
         }
 
         this.generateMenuUI = function(content){
@@ -274,13 +278,42 @@
         }
 
         this.removeCard = function(id){
-            
+            boardID = self.__getBoardIDFromCardID(id)
+            cardID  = id
+            self.__deleteData(boardID, cardID)
+            self.redraw()
         }
 
         this.removeBoard = function(id){
-            
+            console.log("remove")
+            let d = self.kanbanData
+            var idx = -1
+            for(let i=0; i<d.length; i++){
+                console.log(id,d[i].BoardID )
+                if(id == d[i].BoardID){
+                    idx = i
+                    break
+                }
+            }
+
+            if(idx != -1){
+                self.kanbanData.splice(idx, 1)
+                self.redraw()
+            }
         }
-        
+
+        this.__getBoardIDFromCardID = function(id){
+            let d = self.kanbanData
+            for(let i=0; i<d.length; i++){
+                let c = d[i].Contents
+                for(let j=0; j<c.length; j++){
+                    if(c[j] == id){
+                        return d[i].BoardID
+                    }
+                }
+            }
+        }
+           
         this.setTheme = function(themeName){
             self.theme = themeName
             self.redraw()
@@ -605,7 +638,7 @@
 
         }
         
-        this.init = function(){
+        this.draw = function(){
             var elem = document.getElementById(self.config.targetElementId)        
             if(elem !== undefined && elem !== null){
                 var kanban = document.createElement('div')
@@ -633,15 +666,14 @@
             }
             self.__dndRegs()
         }
-
-        
+      
         // init
         self.kanbanData    = self.config.content
         self.kanbanDataOld = self.config.content
         self.kanbanPosition= []
         self.timerId       = null
         this.theme         = self.config.defaultUI.theme        
-        this.init()
+        this.draw()
         console.log(self.__getBoardData())
     }    
 })()
