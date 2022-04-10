@@ -260,6 +260,10 @@ html{
     
 }
 
+.kanbansys-event-dragging{
+    opacity: 0.5;
+}
+
 .kanbansys-ui-display-none{
     display: none;
 }
@@ -282,4 +286,8 @@ html{
 
 .kanbansys-theme-dark .kanbansys-style-simple{
     color: #b6b6b6;
+}
+
+.kanbansys-event-tmp-insert{
+    opacity: 0.5;
 }

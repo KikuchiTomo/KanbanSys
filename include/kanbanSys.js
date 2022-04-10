@@ -188,11 +188,7 @@
             header.appendChild(add)
 
             return header
-        }
-        
-        this.__updateBoardHeader = function(title, num){
-            
-        }
+        }          
 
         this.__createBoard = function(content){
 
@@ -315,101 +311,14 @@
             })
             
             self.redraw()
-        }
-        
-        this.__dragFisrt = function(e) {
-            self.x = e.clientX - this.offsetLeft
-            self.y = e.clientY - this.offsetTop
-            self.h = this.clientHeight
-            self.src = e.target;
-            self.src.classList.add("kanbansys-event-drag")
-            e.dataTransfer.effectAllowed = "move";
-            this.clientHeight = 0
-            self.mec = this.cloneNode(true)
-            self.me  = this
-            self.board = null
-            for(let i=0; i<e.path.length-2; i++){
-                if(e.path[i].classList.contains("kanbansys-event-board")){
-                    self.board = e.path[i];
-                    break;
-                }
-            }
-            self.mec.id = "tmp00-"  + self.me.id
-            // e.dataTransfer.setData("text/plain", e.target.innerHTML);
-        }
-
-        this.__dragOver = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.dataTransfer.dropEffect = "move";            
-            let cnt = 0;
-            for(let i=0; i<e.path.length-2; i++){
-                cnt = i;
-                if(e.path[i].classList.contains("kanbansys-event-card")){
-                    let oy = e.path[i].offsetTop + e.path[i].clientHeight / 2.0;
-                    let my = e.clientY - self.y + self.h / 2.0
-                    if(oy > my){                        
-                        if(self.me !== null && self.me !== undefined){
-                            e.path[i].before(self.mec)
-                            self.me.style.display = "none";
-
-                            if(e.path[i].id.slice(0, 5) != "tmp00"){
-                                self.before = e.path[i].id
-                            }
-                        }
-                        
-                    }else{
-                        if(self.me !== null && self.me !== undefined){
-                            e.path[i].after(self.mec)
-                            self.me.style.display = "none";
-                            if(e.path[i].id.slice(0, 5) != "tmp00"){
-                                self.after = e.path[i].id
-                                console.log(self.after)
-                            }
-                        }                       
-                    }
-                    break
-                }
-            }
-
-            if(cnt == e.path.length-3){
-                for(let i=0; i<e.path.length-2; i++){
-                    if(e.path[i].classList.contains("kanbansys-event-board")){
-                        let my = e.clientY - self.y + self.h / 2.0
-                        let bd =  e.path[i].offsetTop + e.path[i].clientHeight / 2.0
-                        if(bd > my){
-                            if(self.me !== null && self.me !== undefined){
-                                e.path[i].getElementsByClassName("kanbansys-style-kanban-body")[0].prepend(self.mec)
-                                self.me.style.display = "none";
-                            }     
-                        }else{
-                            if(self.me !== null && self.me !== undefined){
-                                e.path[i].getElementsByClassName("kanbansys-style-kanban-body")[0].appendChild(self.mec)
-                                self.me.style.display = "none";
-                            }
-                        }
-                    }
-                }
-            }
-
-            console.log(self.me.dataset.data)
-            
-        }
-
-        this.__mouseUp = function(e) {
-            if(self.src === null || self.src === undefined) return
-            if(self.src.classList.contains("kanbansys-event-drag"))  self.src.classList.remove("kanbansys-event-drag")
-
-            self.me.style.display = "block";
-            
-            let tmp = document.getElementById(self.mec.id)
-            if(tmp !==undefined && tmp !== null) tmp.remove();
-        }
+        }          
 
         this.__addDataTop = function(boardID, content){
             self.kanbanData.forEach((data) => {
                 if(data["BoardID"] == boardID){
+                    console.log("add top", boardID)
                     data["Contents"].unshift(content)
+                    return
                     //                    console.log("AT",data["Contents"])
                 }
             })
@@ -418,12 +327,109 @@
         this.__addDataBottom = function(boardID, content){
             self.kanbanData.forEach((data) => {
                 if(data["BoardID"] == boardID){
+                    console.log("add bottom", boardID)
                     data["Contents"].push(content)
+                    return
                     //                    console.log("AB",data["Contents"])
                 }
             })
         }
 
+        this.__calcHeightPosition = function(elem){
+            let y = elem.offsetTop
+            let h = elem.clientHeight
+
+            return (y + h / 2.0)
+        }
+        
+        this.__calcAllHeightPostion = function(boardData){
+            self.kanbanPosition = []
+            for(let i=0; i<boardData.length; i++){
+                let board = boardData[i]
+                let content = board["Contents"]
+                var cardPos = []
+                for(let j=0; j<content.length; j++){
+                    let card = document.getElementById(content[j].id)
+                    let pos  = self.__calcHeightPosition(card)
+
+                    cardPos.push({
+                        "id": card.id,
+                        "pos": pos
+                    })                    
+                }
+
+                self.kanbanPosition.push({
+                    "BoardID": board["BoardID"],
+                    "ContentsPosition": cardPos
+                })
+            }
+            return self.kanbanPosition
+        }
+        
+        this.__calcInsertIndex = function(event, boardID){
+            var nd = self.__getBoardData()
+            console.log(nd)
+            var pd = self.__calcAllHeightPostion(nd)
+            var bpos = document.getElementById(self.config.kanbanId).offsetTop
+            var ppos = bpos
+            
+            var insertTargetId = null
+            var insertAfter = false
+            
+            for(let i=0; i<pd.length; i++){
+                if(pd[i]["BoardID"] !== boardID) continue;
+                let poss = pd[i]["ContentsPosition"]
+                
+                for(let j=0; j<poss.length; j++){
+                    var id  = poss[j]["id"]
+                    var pos = poss[j]["pos"]
+
+                    var nowpos = event.clientY - self.y + self.h / 2.0
+
+                    if(ppos < nowpos && pos > nowpos){
+                        insertTargetId = poss[j]["id"]
+                        insertAfter = false
+                        break
+                    }else{
+                        insertTargetId = poss[j]["id"]
+                        insertAfter = true                        
+                    }
+
+                    ppos = pos
+                }                
+            }
+
+            
+            console.log((insertAfter)? "after" : "before", insertTargetId)
+            return {"boardID": boardID, "cardID" : insertTargetId, "isAfter": insertAfter}
+        }
+
+        this.__getBoardData = function(){
+            var k0 = document.getElementById(self.config.kanbanId)
+            if(k0 !== null && k0 !== undefined){
+                var data = []
+                var b0 = document.querySelectorAll("#" + self.config.kanbanId + " .kanbansys-event-board")
+                // Board
+                for(let i=0; i<b0.length; i++){
+                    var c0 = document.querySelectorAll("#" + b0[i].id + "-board .kanbansys-event-card")
+                    // Card
+                    c0 = [].slice.call(c0); // Convert to Array
+                    var cards = []
+                    for(let j=0; j<c0.length; j++){
+                        cards.push(JSON.parse(c0[j].dataset.data))
+                    }
+                    data.push({
+                        "BoardID": b0[i].id,
+                        "BoardName" : document.getElementById(b0[i].id + "-title").innerHTML,
+                        "Contents" : cards
+                    })
+                }
+                return data
+                
+            }
+            return null
+        }
+        
         this.__searchData = function(boardID, cardID){
             console.log(boardID, cardID)
             var b0 = 0
@@ -445,6 +451,15 @@
 
             return {"boardIndex": b0, "cardIndex": c0}
         }
+
+        this.__getBoardIDFromEvent = function(e){
+            for(let i=0; i<e.path.length-2; i++){
+                if(e.path[i].classList.contains("kanbansys-event-board")){
+                    return e.path[i].id
+                    break;
+                }
+            }
+        }
         
         this.__addDataAfter = function(boardID, cardID, content){
             var idxs = self.__searchData(boardID, cardID)
@@ -455,7 +470,7 @@
         this.__addDataBefore = function(boardID, cardID, content){
             var idxs = self.__searchData(boardID, cardID)
             console.log("add before", idxs)
-            self.kanbanData[idxs["boardIndex"]]["Contents"].splice(idxs.cardIndex - 1, 0, content) // Insert   
+            self.kanbanData[idxs["boardIndex"]]["Contents"].splice(idxs.cardIndex, 0, content) // Insert   
         }
 
         this.__deleteData = function(boardID, cardID){
@@ -463,82 +478,94 @@
             console.log("delete", idxs)
             self.kanbanData[idxs["boardIndex"]]["Contents"].splice(idxs.cardIndex, 1) // Delete
         }        
+
+        this.__dragFisrt = function(e) {
+            e.dataTransfer.effectAllowed = "move";
+
+            self.x = e.clientX - this.offsetLeft
+            self.y = e.clientY - this.offsetTop
+            self.h = this.clientHeight
+            this.clientHeight = 0
+            
+            self.dragTargetElem  = this
+            self.dragStartBoard = null
+
+            // Get board
+            for(let i=0; i<e.path.length-2; i++){
+                if(e.path[i].classList.contains("kanbansys-event-board")){
+                    self.dragStartBoard = e.path[i];
+                    break;
+                }
+            }
+
+            self.dragTargetElemClone = this.cloneNode(true)            
+            self.dragTargetElemClone.id = "kanbansys-tmp00"
+            self.dragTargetElemClone.classList.remove("kanbansys-event-board")
+            self.dragTargetElemClone.classList.add("kanbansys-event-tmp-insert")
+            self.dragTargetElem.classList.add("kanbansys-event-dragging")            
+        }
+        
+
+        this.__dragOver = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = "move";
+            if(self.timerId != null) window.clearTimeout(self.timerId)
+            
+            self.timerId = window.setTimeout(function(){
+                if( self.dragTargetElem.classList.contains("kanbansys-event-dragging")){
+                    self.dragTargetElem.classList.remove("kanbansys-event-dragging")
+                }
+
+                let tmp = document.getElementById("kanbansys-tmp00")
+                if(tmp !== undefined && tmp !== null){
+                    tmp.remove()
+                }
+            }, 1000)
+
+            // boardID = self.__getBoardIDFromEvent(e)
+            //let target = self.__calcInsertIndex(e, boardID)
+
+            console.log("From : ", self.dragTargetElem.id )
+            // tmp Insert
+            
+            
+        }
+
+        this.__mouseUp = function(e) {
+            
+        }
         
         this.__dragEnd = function(e) {
             console.log("Drop")
             e.preventDefault();
             e.stopPropagation();
+
+            boardID = self.__getBoardIDFromEvent(e)
+            let target = self.__calcInsertIndex(e, boardID)
             
-            var board = null
-            console.log(e.path)
-            for(let i=0; i<e.path.length-2; i++){
-                if(e.path[i].classList.contains("kanbansys-event-board")){
-                    board = e.path[i];
-                    console.log(board, "now")
-                    break;
-                }
+            cardID = target.cardID + "-card"
+            content = JSON.parse(self.dragTargetElem.dataset.data);
+
+            if(self.dragTargetElem !== undefined &&
+               self.dragTargetElem !== null      &&
+               self.dragStartBoard !== undefined &&
+               self.dragStartBoard !== null) {
+                self.__deleteData(self.dragStartBoard.id, self.dragTargetElem.id)
+            }else{
+                console.log("[ERROR] Failed to delete drag element from data.")
             }
 
-            if(board === null || board === undefined){
-                let tmp = document.getElementById(self.mec.id)
-                if(tmp !==undefined && tmp !== null) tmp.remove();
-                
-                self.me.style.display = "block";                      
-                self.src = null
-                return
-            }
-            
-            let cnt = 0;
-            for(let i=0; i<e.path.length-2; i++){
-                cnt = i;
-                if(e.path[i].classList.contains("kanbansys-event-card")){
-                    let oy = e.path[i].offsetTop + e.path[i].clientHeight / 2.0;
-                    let my = e.clientY - self.y + self.h / 2.0
-                    self.__deleteData(self.board.id, self.me.id)                    
-                    if(oy > my){
-                        //console.log(e.path[i].id , "より上")
-                        console.log("add before", board.id, e.path[i].id, JSON.parse(self.me.dataset.data))
-                        if(e.path[i].id.slice(0, 5) == "tmp00"){
-                            self.__addDataBefore(board.id, self.before, JSON.parse(self.me.dataset.data))      
-                        }else{
-                            self.__addDataBefore(board.id, e.path[i].id, JSON.parse(self.me.dataset.data))                
-                        }
-                    }else{
-                        //console.log(e.path[i].id + "より下")
-                        console.log("add after", board.id, e.path[i].id, JSON.parse(self.me.dataset.data))
-                        if(e.path[i].id.slice(0, 5) == "tmp00"){
-                            self.__addDataBefore(board.id, self.after, JSON.parse(self.me.dataset.data))    
-                        }else{
-                            self.__addDataAfter(board.id, e.path[i].id, JSON.parse(self.me.dataset.data))
-                        }
-                        self.redraw()                                            
-                        break
-                    }
-                }
-            }
-
-            
-            if(cnt == e.path.length-3){
-                let my = e.clientY - self.y + self.h / 2.0
-                let bd = board.offsetTop + board.clientHeight / 2.0
-                self.__deleteData(self.board.id, self.me.id)                    
-                if(bd > my){
-                    //console.log(board.id , "の一番上")
-                    console.log("add top", board.id, JSON.parse(self.me.dataset.data))
-                    self.__addDataTop(board.id, JSON.parse(self.me.dataset.data))
+            if(target.cardID !== null){
+                if(target.isAfter){
+                    self.__addDataAfter(target.boardID, cardID, content)
                 }else{
-                    // console.log(board.id + "の一番下")
-                    console.log("add bottom", board.id, JSON.parse(self.me.dataset.data))
-                    self.__addDataBottom(board.id, JSON.parse(self.me.dataset.data))
-                }                
+                    self.__addDataBefore(target.boardID, cardID, content)
+                }
+            }else{
+                self.__addDataTop(target.boardID, content)
             }
-
             
-            let tmp = document.getElementById(self.mec.id)
-            if(tmp !==undefined && tmp !== null) tmp.remove();
-
-            self.src = null
-            //            console.log("result", self.kanbanData)
             self.redraw()   
         }
         
@@ -597,7 +624,7 @@
                     if(i<b_num-1){
                         board.classList.add("kanbansys-style-right-margin-10")                       
                     }
-                   
+                    
                     board.classList.add("kanbansys-event-board")                       
                     kanban.appendChild(board)
                 }
@@ -611,8 +638,11 @@
         // init
         self.kanbanData    = self.config.content
         self.kanbanDataOld = self.config.content
+        self.kanbanPosition= []
+        self.timerId       = null
         this.theme         = self.config.defaultUI.theme        
         this.init()
+        console.log(self.__getBoardData())
     }    
 })()
 

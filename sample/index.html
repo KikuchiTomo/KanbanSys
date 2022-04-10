@@ -142,9 +142,9 @@
              kanban.addBoard(
                  document.getElementById("t2").value,
                  "id" + cnt.toString(),  
-                 {
-                     // Any data...
-                 }
+                 [
+                     
+                 ]
              )
         }
         
@@ -165,6 +165,12 @@
             kanban.setTheme("dark")                
         })
 
+        let test = ["a", "b", "c", "d"]
+        test.splice(1, 0, "0")
+        console.log(test)
+        let test0 = ["a", "b", "c", "d"]
+        test0.splice(2, 0, "0")        
+        console.log(test0)
     }
     
   </script>
