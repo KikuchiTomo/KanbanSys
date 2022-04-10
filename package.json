@@ -6,14 +6,15 @@
     "watch": {
         "build": [
             "kanbanSys.js",
-            "css/kanbanSys_Style.css"
+            "kanbanSys_Style.css"
         ]
     },
     "scripts": {
         "watch_build": "npm-watch build",
-        "build": "npm run scripts && npm run styles",
+        "build": "npm run scripts && npm run styles && npm run min",
         "scripts": "browserify ./kanbanSys.js -o ./include/kanbanSys.js",
-        "styles": "npm-css ./css/kanbanSys_Style.css > ./include/kanbanSys.css && cleancss ./include/kanbanSys.css -o ./include/kanbanSys.min.css",
+        "min": "uglifyjs ./include/kanbanSys.js -c --compress --mangle --output ./include/kanbanSys.min.js",
+        "styles": "cleancss kanbanSys_Style.css -o ./include/kanbanSys.min.css",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -30,8 +31,8 @@
     },
     "homepage": "https://github.com/KikuchiTomo/KanbanSys#readme",
     "dependencies": {
-        "npm-css": "^0.2.3",
-        "npm-watch": "^0.11.0"
+        "npm-watch": "^0.11.0",
+        "uglify-es": "^3.3.9"
     },
     "devDependencies": {
         "browserify": "^17.0.0",
