@@ -533,7 +533,7 @@
 
             self.dragTargetElemClone = this.cloneNode(true)            
             self.dragTargetElemClone.id = "kanbansys-tmp00"
-            self.dragTargetElemClone.classList.remove("kanbansys-event-board")
+            self.dragTargetElemClone.classList.remove("kanbansys-event-card")
             self.dragTargetElemClone.classList.add("kanbansys-event-tmp-insert")
             self.dragTargetElem.classList.add("kanbansys-event-dragging")            
         }
@@ -550,19 +550,35 @@
                     self.dragTargetElem.classList.remove("kanbansys-event-dragging")
                 }
 
+                 if( self.dragTargetElem.classList.contains("kanbansys-event-dragging-none")){
+                    self.dragTargetElem.classList.remove("kanbansys-event-dragging-none")
+                }
+
                 let tmp = document.getElementById("kanbansys-tmp00")
                 if(tmp !== undefined && tmp !== null){
                     tmp.remove()
                 }
             }, 1000)
 
-            // boardID = self.__getBoardIDFromEvent(e)
-            //let target = self.__calcInsertIndex(e, boardID)
+            boardID = self.__getBoardIDFromEvent(e)
+            let target = self.__calcInsertIndex(e, boardID)
 
-            console.log("From : ", self.dragTargetElem.id )
             // tmp Insert
+            self.dragTargetElem.classList.add("kanbansys-event-dragging-none") 
+            if(target.cardID !== null){
+                cardID = target.cardID + "-card"               
+                let card = document.getElementById(cardID)
+                 if(target.isAfter){
+                     card.after(self.dragTargetElemClone)
+                 }else{
+                     card.before(self.dragTargetElemClone)
+                 }
+            }else{
+                let board = document.getElementById(boardID +"-board")
+                board.appendChild(self.dragTargetElemClone)
+            }
             
-            
+
         }
 
         this.__mouseUp = function(e) {
