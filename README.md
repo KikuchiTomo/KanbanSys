@@ -1,10 +1,12 @@
 # KanbanSys
 
-KanbanSys is a simple board system library on JavaScript.
-this version is beta (developing..)
+KanbanSys is a simple board system library on JavaScript.  
+this version is beta (developing..).  
+Try this version! [Demo](https://tomodev.work/github/demo/kanbanSys)
 
 ## How to install
-Please clone this repo and copy `include` dir into your workspace.
+Please clone this repo and copy `include` dir into your workspace.  
+
 You have to include next files in header tag.
 
 ```html
