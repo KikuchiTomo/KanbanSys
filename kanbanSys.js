@@ -48,7 +48,7 @@
             return doms
         }
 
-        this.__assemblerType1 = function(){
+        this.__assemblerType1 = function(content){
             
         }
 
@@ -224,7 +224,7 @@
             // TODO : assembler 
             if(t == "simple"){
                 doms = self.__assemblerType0(con)                
-            }else if(t == "issue"){
+            }else if(t == "rich"){
                 doms = self.__assemblerType1(con)     
             }else if(t == "image"){
                 doms = self.__assemblerType2(con)     
@@ -485,9 +485,11 @@
         }
 
         this.__getBoardIDFromEvent = function(e){
-            for(let i=0; i<e.path.length-2; i++){
-                if(e.path[i].classList.contains("kanbansys-event-board")){
-                    return e.path[i].id
+            console.log(e)
+            var path = e.path || (e.composedPath && e.composedPath());
+            for(let i=0; i<path.length-2; i++){
+                if(path[i].classList.contains("kanbansys-event-board")){
+                    return path[i].id
                     break;
                 }
             }
@@ -523,9 +525,10 @@
             self.dragStartBoard = null
 
             // Get board
-            for(let i=0; i<e.path.length-2; i++){
-                if(e.path[i].classList.contains("kanbansys-event-board")){
-                    self.dragStartBoard = e.path[i];
+            var path = e.path || (e.composedPath && e.composedPath());
+            for(let i=0; i<path.length-2; i++){
+                if(path[i].classList.contains("kanbansys-event-board")){
+                    self.dragStartBoard = path[i];
                     break;
                 }
             }
@@ -645,10 +648,6 @@
                 e.preventDefault();
             })
 
-            document.getElementsByTagName('html')[0].addEventListener('drop', function(e){
-                e.preventDefault();
-            })
-            
             document.getElementsByTagName('html')[0].addEventListener('mouseup', self.__mouseUp, false)  
 
         }
