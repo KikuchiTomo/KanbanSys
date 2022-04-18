@@ -345,7 +345,8 @@ html{
 }
 
 .kanbansys-style-issue .issueDate{
-    font-size: 12.5px
+    font-size: 12.5px;
+    padding-top: 5px;
 }
 
 .kanbansys-style-issue .issuePerson{

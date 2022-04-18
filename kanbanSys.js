@@ -331,10 +331,14 @@
                 self.sendToServer()
             }
             
+            
             // re-draw
             let kanban = document.getElementById(self.config.kanbanId)
+            let kanbanScroll = kanban.scrollLeft
             kanban.remove()
             self.draw()
+            let newkanban = document.getElementById(self.config.kanbanId)
+            newkanban.scrollLeft = kanbanScroll
         }
 
         this.generateMenuUI = function(content){
