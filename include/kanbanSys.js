@@ -292,14 +292,6 @@
                 doms = self.__assemblerType0(con)                
             }else if(t == "issue"){
                 doms = self.__assemblerType1(con)     
-            }else if(t == "image"){
-                doms = self.__assemblerType2(con)     
-            }else if(t == "simpleLink"){
-                doms = self.__assemblerType3(con)     
-            }else if(t == "issueLink"){
-                doms = self.__assemblerType4(con)     
-            }else if(t == "imageLink"){
-                doms = self.__assemblerType5(con)     
             }else{
                 if(originalAssembler !== null){
                     doms = self.originalAssembler(con)     
