@@ -301,3 +301,87 @@ html{
 .kanbansys-event-dragging-none{
     display: none;
 }
+
+.kanbansys-style-issue .issueTitleContainer{
+    display: flex;
+}
+
+.kanbansys-style-issue .issuePersonContainer{
+    display: flex;
+    padding: 4px 0 0 5px;
+}
+
+.kanbansys-style-issue .issueIcon{
+    width: 25px;
+    height: 25px;
+    object-fit: fill;
+    object-position: center;
+    border-radius: 17.5px;
+    margin: 4px 8px 4px 0;
+}
+
+.kanbansys-style-issue a.issueLink{
+    text-decoration: none;
+    font-family: sans-serif;
+    display: block;
+}
+
+.kanbansys-style-issue .issueTitle{
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 34px;
+}
+
+.kanbansys-style-issue .issueTags{
+    display: inline-block;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 14px;
+    padding: 2.5px 6px 4px 6px;
+    margin: 10px 8px 4px 0;
+    border-radius: 11px;
+    border-style: solid;
+    border-width: 0.5px;
+}
+
+.kanbansys-style-issue .issueDate{
+    font-size: 12.5px
+}
+
+.kanbansys-style-issue .issuePerson{
+    font-size: 14px;
+    padding: 2px 3px;
+}
+
+.kanbansys-style-issue .issuePersonIcon{
+    width: 15px;
+    height: 15px;
+    object-fit: fill;
+    object-position: center;
+    border-radius: 7.5px;
+    margin: 5px 7px 5px 0;
+}
+
+.kanbansys-theme-dark .issueTitle{
+    color: #d9d9d9;
+}
+
+.kanbansys-theme-dark .issueDate{
+    color: #ababab;
+}
+
+.kanbansys-theme-dark .issuePerson{
+    color: white;
+}
+
+.kanbansys-theme-light .issueTitle{
+    color: #2e2e2e;
+}
+
+.kanbansys-theme-light .issueDate{
+    color: #5e5e5e;
+}
+
+.kanbansys-theme-light .issuePerson{
+    color: #252525;
+}
