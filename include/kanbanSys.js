@@ -50,7 +50,72 @@
         }
 
         this.__assemblerType1 = function(content){
-            
+            var doms = []
+            if(content === undefined ||
+               content === null ||
+               content.length === undefined){
+                return doms
+            }
+
+            content.forEach((data) => {
+                var issueLink = document.createElement('a')
+                issueLink.href = data["issueUrl"]              
+                issueLink.id  = data['id']
+                issueLink.classList.add('issueLink')
+                
+                var issueTitle = document.createElement('div')
+                issueTitle.classList.add("issueTitle")
+                issueTitle.innerHTML = data['issueTitle']
+                issueTitle.dataset.issueTitle = data['issueTitle']
+
+                var issueIcon = document.createElement('img')
+                issueIcon.classList.add("issueIcon")
+                issueIcon.src = data['issueIconSrc']
+
+                var issueDate = document.createElement('div')
+                issueDate.classList.add("issueDate")
+                issueDate.innerHTML = data['issueDate']
+
+                var issuePerson = document.createElement('div')
+                issuePerson.classList.add("issuePerson")
+                issuePerson.innerHTML = data['issuePerson']
+
+                var issuePersonIcon = document.createElement('img')
+                issuePersonIcon.classList.add('issuePersonIcon')
+                issuePersonIcon.src = data['issuePersonIconSrc']
+
+                var issueTagsContainer = document.createElement('div')
+                issueTagsContainer.classList.add('issueTagContainer')
+                
+                data['issueTags'].forEach((tag) => {
+                    var issueTag = document.createElement('div')
+                    issueTag.style.background = tag['background'] || "white"
+                    issueTag.style.color      = tag['color'] || "black"
+                    issueTag.innerHTML = tag['tag']
+                    issueTag.classList.add("issueTags")
+                    issueTag.style.borderColor = tag['color']
+                    issueTagsContainer.appendChild(issueTag)
+                })
+
+                var issueTitleContainer = document.createElement('div')
+                issueTitleContainer.classList.add("issueTitleContainer")
+                issueTitleContainer.appendChild(issueIcon)
+                issueTitleContainer.appendChild(issueTitle)
+
+                var issuePersonContainer = document.createElement('div')
+                issuePersonContainer.classList.add('issuePersonContainer')
+                issuePersonContainer.appendChild(issuePersonIcon)
+                issuePersonContainer.appendChild(issuePerson)
+
+                issueLink.appendChild(issueTitleContainer)
+                issueLink.appendChild(issueTagsContainer)
+                issueLink.appendChild(issueDate)
+                issueLink.appendChild(issuePersonContainer)
+
+                doms.push(issueLink)
+            })
+
+            return doms
         }
 
         this.__assemblerType2 = function(){
@@ -225,16 +290,8 @@
             // TODO : assembler 
             if(t == "simple"){
                 doms = self.__assemblerType0(con)                
-            }else if(t == "rich"){
+            }else if(t == "issue"){
                 doms = self.__assemblerType1(con)     
-            }else if(t == "image"){
-                doms = self.__assemblerType2(con)     
-            }else if(t == "simpleLink"){
-                doms = self.__assemblerType3(con)     
-            }else if(t == "issueLink"){
-                doms = self.__assemblerType4(con)     
-            }else if(t == "imageLink"){
-                doms = self.__assemblerType5(con)     
             }else{
                 if(originalAssembler !== null){
                     doms = self.originalAssembler(con)     
@@ -267,10 +324,14 @@
                 self.sendToServer()
             }
             
+            
             // re-draw
             let kanban = document.getElementById(self.config.kanbanId)
+            let kanbanScroll = kanban.scrollLeft
             kanban.remove()
             self.draw()
+            let newkanban = document.getElementById(self.config.kanbanId)
+            newkanban.scrollLeft = kanbanScroll
         }
 
         this.generateMenuUI = function(content){

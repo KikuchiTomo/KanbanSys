@@ -48,6 +48,32 @@
         var kanbanContent = [
             {
                 BoardName: "Idea",
+                BoardID: "board0",
+                Contents: [
+                    {
+                        id: "id0",
+                        issueTitle: "Do my homework",
+                        issueUrl: "./",
+                        issueIconSrc: "http://flat-icon-design.com/f/f_object_156/s256_f_object_156_0bg.png",
+                        issueDate: "2022年11月11日 午後12時35分",
+                        issuePerson: "Kikuchi Tomoo",
+                        issuePersonIconSrc: "http://flat-icon-design.com/f/f_object_165/s256_f_object_165_0bg.png",
+                        issueTags: [
+                            {
+                                background: '#e5e56640',
+                                color: '#e5e566',
+                                tag: 'bug fix'               
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+
+            /*
+            [
+            {
+                BoardName: "Idea",
                 BoardID:   "board0",
                 Contents: [ // You can define your data structure.
                     {
@@ -101,7 +127,7 @@
                     }
                 ] 
             }
-        ]
+        ]*/
         
         var kanban = new KanbanSys({
             kanbanId: "kanban0",
@@ -109,7 +135,7 @@
             structre: {
                 allowOriginalAssembler: false,
                 originalAssembler: null,
-                defaultAssemblerType: "simple" 
+                defaultAssemblerType: "issue" 
             },          
             server: {
                 autoUpload: true,
@@ -131,8 +157,19 @@
                 "board0",
                 {
                     id: "id" + cnt.toString(),                        
-                    title: document.getElementById("t0").value,
-                    person: document.getElementById("t1").value
+                    issueTitle: document.getElementById("t0").value,
+                    issueUrl: "./",
+                    issueIconSrc: "http://flat-icon-design.com/f/f_object_156/s256_f_object_156_0bg.png",
+                    issueDate: "2022年11月11日 午後12時35分",
+                    issuePerson: document.getElementById("t1").value,
+                    issuePersonIconSrc: "http://flat-icon-design.com/f/f_object_165/s256_f_object_165_0bg.png",
+                    issueTags: [
+                        {
+                            background: '#e5e56640',
+                            color: '#e5e566',
+                            tag: 'bug fix'               
+                        }
+                    ]
                 }
             )
         }

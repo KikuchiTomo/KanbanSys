@@ -10,9 +10,9 @@ Please clone this repo and copy `include` dir into your workspace.
 You have to include next files in header tag.
 
 ```html
-<-- in header -->
+<!-- in header -->
 <link rel="stylesheet" href="include/kanbanSys.min.css">
-<script src="include/kanbanSys.js"></script>
+<script src="include/kanbanSys.min.js"></script>
 
 ```
 
